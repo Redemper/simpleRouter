@@ -1,5 +1,5 @@
 # simpleRouter
-自制路由器
+自制路由器,目标是实现一个go版本的gateway
 
 
 
