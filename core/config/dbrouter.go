@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"simpleRouter/core/route"
 	"strings"
-	"sync"
 )
 
 /**
@@ -34,36 +34,6 @@ func GetDB() gorm.DB {
 	return iDB
 }
 
-var routerMap sync.Map
-
-func AddRouter(r *Router) {
-	routerMap.Store(r.Name, r)
-}
-
-func GetRouter(name string) *Router {
-	route, ok := routerMap.Load(name)
-	if !ok {
-		return nil
-	}
-	realRouter, ok := route.(*Router)
-	if ok {
-		return realRouter
-	}
-	return nil
-}
-
-func GetAllRouter() []*Router {
-	var routes []*Router
-	routerMap.Range(func(key, value interface{}) bool {
-		router, ok := value.(*Router)
-		if ok {
-			routes = append(routes, router)
-		}
-		return true
-	})
-	return routes
-}
-
 func init() {
 	// read conf
 	conf := new(DBConf)
@@ -80,22 +50,14 @@ func init() {
 		dbString := conf.generateDBString()
 		// init db and migrate router
 		db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
-		db.AutoMigrate(&Router{})
-		var routes []*Router
+		db.AutoMigrate(&route.Router{})
+		var routes []*route.Router
 		db.Where(" enabled = 1 ").Find(&routes)
 		for _, r := range routes {
 			// init route
-			AddRouter(r)
+			route.AddRouter(r)
 		}
 	}
-}
-
-type Router struct {
-	Name      string `gorm:"name"`
-	OriginUri string `gorm:"origin_uri"`
-	Order     int    `gorm:"order"`
-	Enabled   bool   `gorm:"enabled"`
-	gorm.Model
 }
 
 func (conf *DBConf) generateDBString() string {

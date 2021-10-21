@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"simpleRouter/core/route"
 	"testing"
 )
 
@@ -39,7 +40,7 @@ func TestReadYaml(t *testing.T) {
 }
 
 func TestGetAllRouter(t *testing.T) {
-	routers := GetAllRouter()
+	routers := route.GetAllRouter()
 	for _, r := range routers {
 		marshal, err := json.Marshal(r)
 		if err == nil {
