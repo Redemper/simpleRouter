@@ -17,6 +17,7 @@ type DBConf struct {
 	User      string `yaml:"user"`
 	Password  string `yaml:"password"`
 	Port      string `yaml:"port"`
+	Schema    string `yaml:"schema"`
 }
 
 var iDB gorm.DB
@@ -44,10 +45,10 @@ func init() {
 }
 
 type Router struct {
-	gorm.Model
 	Name      string `gorm:"name"`
 	OriginUri string `gorm:"origin_uri"`
 	Order     int    `gorm:"order"`
+	gorm.Model
 }
 
 func (conf *DBConf) generateDBString() string {
@@ -60,6 +61,8 @@ func (conf *DBConf) generateDBString() string {
 	result.WriteString(conf.Url)
 	result.WriteString(":")
 	result.WriteString(conf.Port)
-	result.WriteString(")/mall_shop?charset=utf8mb4&parseTime=True&loc=Local")
+	result.WriteString(")/")
+	result.WriteString(conf.Schema)
+	result.WriteString("?charset=utf8mb4&parseTime=True&loc=Local")
 	return result.String()
 }
