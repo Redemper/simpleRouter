@@ -8,8 +8,17 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
+/**
+  db conf.
+  Url : 地址
+  Port : 端口
+  User : 用户名
+  Password : 密码
+  Schema : 数据库schema
+*/
 type DBConf struct {
 	Dialector string `yaml:"dialector"`
 	Url       string `yaml:"url"`
@@ -20,6 +29,40 @@ type DBConf struct {
 }
 
 var iDB gorm.DB
+
+func GetDB() gorm.DB {
+	return iDB
+}
+
+var routerMap sync.Map
+
+func AddRouter(r *Router) {
+	routerMap.Store(r.Name, r)
+}
+
+func GetRouter(name string) *Router {
+	route, ok := routerMap.Load(name)
+	if !ok {
+		return nil
+	}
+	realRouter, ok := route.(*Router)
+	if ok {
+		return realRouter
+	}
+	return nil
+}
+
+func GetAllRouter() []*Router {
+	var routes []*Router
+	routerMap.Range(func(key, value interface{}) bool {
+		router, ok := value.(*Router)
+		if ok {
+			routes = append(routes, router)
+		}
+		return true
+	})
+	return routes
+}
 
 func init() {
 	// read conf
@@ -38,6 +81,12 @@ func init() {
 		// init db and migrate router
 		db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
 		db.AutoMigrate(&Router{})
+		var routes []*Router
+		db.Where(" enabled = 1 ").Find(&routes)
+		for _, r := range routes {
+			// init route
+			AddRouter(r)
+		}
 	}
 }
 
@@ -45,6 +94,7 @@ type Router struct {
 	Name      string `gorm:"name"`
 	OriginUri string `gorm:"origin_uri"`
 	Order     int    `gorm:"order"`
+	Enabled   bool   `gorm:"enabled"`
 	gorm.Model
 }
 
