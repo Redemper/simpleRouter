@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -32,15 +31,13 @@ func init() {
 			log.Fatalf("yamlFile.Get err #%v ", err)
 		}
 		err = yaml.Unmarshal(yamlFile, conf)
-		// err = yaml.Unmarshal(yamlFile, &resultMap)
 		if err != nil {
 			log.Fatalf("Unmarshal: %v", err)
 		}
 		dbString := conf.generateDBString()
-		fmt.Println("db string =====  ", dbString)
+		// init db and migrate router
 		db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
 		db.AutoMigrate(&Router{})
-		//iDB = gorm.Open(mysql.open(generateDBString()))
 	}
 }
 
