@@ -1,5 +1,5 @@
 dialector: mysql
 url: rm-2zea4h41ew1cd3njd.mysql.rds.aliyuncs.com
 port: 3306
-user: cd_mall
-password: finapp
+user: finapp
+password: FinApp
