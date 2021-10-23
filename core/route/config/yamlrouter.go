@@ -8,10 +8,9 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
-	"simpleRouter/core/route"
 )
 
-func initRouterFromYaml() {
+func InitRouterFromYaml() {
 	path, errp := filepath.Abs("../../conf")
 	log.Println("start read router config from yaml")
 	yr := new(yamlRouters)
@@ -26,11 +25,11 @@ func initRouterFromYaml() {
 		}
 		routers := yr.Routers
 		for _, r := range routers {
-			route.AddRouter(r)
+			AddRouter(r)
 		}
 	}
 }
 
 type yamlRouters struct {
-	Routers []*route.Router `yaml:"router"`
+	Routers []*Router `yaml:"router"`
 }

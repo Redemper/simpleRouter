@@ -7,14 +7,13 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
-	"simpleRouter/core/route"
 	"testing"
 )
 
 func TestReadYaml(t *testing.T) {
 	// resultMap := make(map[string]interface{})
 	conf := new(DBConf)
-	path, errp := filepath.Abs("../../conf")
+	path, errp := filepath.Abs("../../../conf")
 	if errp == nil {
 		fmt.Println("path === ", path)
 		yamlFile, err := ioutil.ReadFile(path + "/gorm.yml")
@@ -40,7 +39,7 @@ func TestReadYaml(t *testing.T) {
 }
 
 func TestGetAllRouter(t *testing.T) {
-	routers := route.GetAllRouter()
+	routers := GetAllRouter()
 	for _, r := range routers {
 		marshal, err := json.Marshal(r)
 		if err == nil {

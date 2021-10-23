@@ -1,9 +1,11 @@
-package route
+package config
 
 import (
 	"gorm.io/gorm"
 	"sync"
 )
+
+var routerMap sync.Map
 
 type Router struct {
 	Name      string `gorm:"name",yaml:"name"`
@@ -12,8 +14,6 @@ type Router struct {
 	Enabled   bool   `gorm:"enabled",yaml:"enabled"`
 	gorm.Model
 }
-
-var routerMap sync.Map
 
 func AddRouter(r *Router) {
 	routerMap.Store(r.Name, r)

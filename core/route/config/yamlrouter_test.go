@@ -10,7 +10,7 @@ import (
 )
 
 func TestInitRouterFromYaml(t *testing.T) {
-	path, errp := filepath.Abs("../../conf")
+	path, errp := filepath.Abs("../../../conf")
 	yr := new(yamlRouters)
 	if errp == nil {
 		fmt.Println("path === ", path)

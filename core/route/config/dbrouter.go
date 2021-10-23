@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
-	"simpleRouter/core/route"
 	"strings"
 )
 
@@ -37,7 +36,7 @@ func GetDB() gorm.DB {
 	return iDB
 }
 
-func initRouterFromDB() {
+func InitRouterFromDB() {
 	// read conf
 	conf := new(DBConf)
 	path, errp := filepath.Abs("../../conf")
@@ -53,12 +52,12 @@ func initRouterFromDB() {
 		dbString := conf.generateDBString()
 		// init db and migrate router
 		db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
-		db.AutoMigrate(&route.Router{})
-		var routes []*route.Router
+		db.AutoMigrate(&Router{})
+		var routes []*Router
 		db.Where(" enabled = 1 ").Find(&routes)
 		for _, r := range routes {
 			// init route
-			route.AddRouter(r)
+			AddRouter(r)
 		}
 	}
 }
