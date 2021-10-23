@@ -1,0 +1,5 @@
+grace-shutdown: true
+server-port: 6789
+rateLimit:
+  enable: true
+  rps: 50

@@ -13,7 +13,7 @@ import (
 
 func InitGinServer() *http.Server {
 	serverConf, err := conf.InitServerConf()
-	if err != nil && serverConf != nil {
+	if err == nil && serverConf != nil {
 		router := gin.Default()
 		//router.GET("/", func(c *gin.Context) {
 		//    time.Sleep(5 * time.Second)
@@ -21,7 +21,7 @@ func InitGinServer() *http.Server {
 		//})
 
 		server := &http.Server{
-			Addr:    serverConf.ServerPort,
+			Addr:    "localhost:" + serverConf.ServerPort,
 			Handler: router,
 		}
 		if serverConf.GraceShutDown {
@@ -41,16 +41,6 @@ func InitGinServer() *http.Server {
 			router.Use(leakBucket(rateLimit))
 		}
 		return server
-
-		//if err := server.ListenAndServe(); err != nil {
-		//    if err == http.ErrServerClosed {
-		//        log.Println("Server closed under request")
-		//    } else {
-		//        log.Fatal("Server closed unexpect")
-		//    }
-		//}
-		//
-		//log.Println("Server exiting")
 	}
 	return nil
 }
@@ -59,6 +49,7 @@ func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
 	prev := time.Now()
 	return func(ctx *gin.Context) {
 		now := limit.Take()
+		log.Printf("%v", now.Sub(prev))
 		prev = now
 	}
 }
