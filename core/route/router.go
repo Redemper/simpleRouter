@@ -6,10 +6,10 @@ import (
 )
 
 type Router struct {
-	Name      string `gorm:"name"`
-	OriginUri string `gorm:"origin_uri"`
-	Order     int    `gorm:"order"`
-	Enabled   bool   `gorm:"enabled"`
+	Name      string `gorm:"name",yaml:"name"`
+	OriginUri string `gorm:"origin_uri",yaml:"origin-uri"`
+	Order     int    `gorm:"order",yaml:"order"`
+	Enabled   bool   `gorm:"enabled",yaml:"enabled"`
 	gorm.Model
 }
 

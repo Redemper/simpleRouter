@@ -1,0 +1,5 @@
+router:
+  - name: router1
+    origin-uri: baidu.com
+    order: 1
+    enabled: true

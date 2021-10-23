@@ -1,3 +1,6 @@
+/**
+load router from db
+*/
 package config
 
 import (
@@ -34,7 +37,7 @@ func GetDB() gorm.DB {
 	return iDB
 }
 
-func init() {
+func initRouterFromDB() {
 	// read conf
 	conf := new(DBConf)
 	path, errp := filepath.Abs("../../conf")
