@@ -1,7 +1,6 @@
 package server
 
 import (
-	"bufio"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/ratelimit"
 	"log"
@@ -61,49 +60,7 @@ func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
 func handlerRequest(context *gin.Context) {
 	req := context.Request
 	path := req.URL.Path
-	response := filter.FilterRequest(context, path)
-	writeResponse(context, response)
+	filter.FilterRequest(context, path)
+	//writeResponse(context, response)
 	return
 }
-
-func writeResponse(context *gin.Context, response *http.Response) {
-	for k, vv := range response.Header {
-		for _, v := range vv {
-			context.Header(k, v)
-		}
-	}
-	defer response.Body.Close()
-	bufio.NewReader(response.Body).WriteTo(context.Writer)
-}
-
-//func(c *gin.Context) handler(){
-//	// step 1: resolve proxy address, change scheme and host in requets
-//	req := c.Request
-//	proxy, err := url.Parse(getLoadBalanceAddr())
-//	if err != nil {
-//		log.Printf("error in parse addr: %v", err)
-//		c.String(500, "error")
-//		return
-//	}
-//	req.URL.Scheme = proxy.Scheme
-//	req.URL.Host = proxy.Host
-//
-//	// step 2: use http.Transport to do request to real server.
-//	transport := http.DefaultTransport
-//	resp, err := transport.RoundTrip(req)
-//	if err != nil {
-//		log.Printf("error in roundtrip: %v", err)
-//		c.String(500, "error")
-//		return
-//	}
-//
-//	// step 3: return real server response to upstream.
-//	for k, vv := range resp.Header {
-//		for _, v := range vv {
-//			c.Header(k, v)
-//		}
-//	}
-//	defer resp.Body.Close()
-//	bufio.NewReader(resp.Body).WriteTo(c.Writer)
-//	return
-//}

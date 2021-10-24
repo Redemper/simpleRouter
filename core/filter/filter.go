@@ -2,7 +2,6 @@ package filter
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"sync"
 )
 
@@ -14,9 +13,9 @@ type Ordered interface {
 	GetOrder() int
 }
 
-func FilterRequest(context *gin.Context, uri string) *http.Response {
+func FilterRequest(context *gin.Context, uri string) {
 	delegate := getDelegate(uri)
-	return delegate.fc.Apply(context)
+	delegate.fc.Apply(context)
 }
 
 //
@@ -28,7 +27,7 @@ func FilterRequest(context *gin.Context, uri string) *http.Response {
 var delegateMap sync.Map
 
 type FilterChan interface {
-	Apply(context *gin.Context) *http.Response
+	Apply(context *gin.Context)
 	NextFilter() FilterChan
 }
 
