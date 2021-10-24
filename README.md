@@ -12,3 +12,15 @@ redis - 缓存
 jwt - 解析token
 
 mysql - 存储
+
+
+
+#### TODO
+
+- [x] db路由配置
+- [x] yaml路由配置
+- [ ] Filter
+- [ ] 转发
+- [ ] jwt
+- [ ] 鉴权
+- [ ] 黑白名单统计
