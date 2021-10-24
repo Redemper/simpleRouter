@@ -14,6 +14,11 @@ type Ordered interface {
 	GetOrder() int
 }
 
+func FilterRequest(context *gin.Context, uri string) *http.Response {
+	delegate := getDelegate(uri)
+	return delegate.fc.Apply(context)
+}
+
 //
 //type OrderedFilter interface {
 //    Filter
@@ -28,22 +33,18 @@ type FilterChan interface {
 }
 
 type Delegate struct {
-	Fc  FilterChan
-	Uri string
+	fc  FilterChan
+	uri string
 }
 
-func (d *Delegate) doFilter(context *gin.Context) {
-	d.Fc.Apply(context)
-}
-
-func GetDelegate(uri string) *Delegate {
+func getDelegate(uri string) *Delegate {
 	delegate, ok := delegateMap.Load(uri)
 	if ok {
 		return delegate.(*Delegate)
 	}
 	d := new(Delegate)
-	d.Fc = findFiltersByUri(uri)
-	d.Uri = uri
+	d.fc = findFiltersByUri(uri)
+	d.uri = uri
 	delegateMap.Store(uri, d)
 	return d
 }

@@ -61,8 +61,7 @@ func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
 func handlerRequest(context *gin.Context) {
 	req := context.Request
 	path := req.URL.Path
-	deltegate := filter.GetDelegate(path)
-	response := deltegate.Fc.Apply(context)
+	response := filter.FilterRequest(context, path)
 	writeResponse(context, response)
 	return
 }
