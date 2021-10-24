@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"simpleRouter/core/conf"
+	"simpleRouter/core/filter"
 	"time"
 )
 
@@ -53,3 +54,42 @@ func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
 		prev = now
 	}
 }
+
+func handlerRequest(context *gin.Context) {
+	req := context.Request
+	path := req.URL.Path
+	filterChan := filter.GetFilterChan(path)
+	filterChan.Apply(context)
+}
+
+//func(c *gin.Context) handler(){
+//	// step 1: resolve proxy address, change scheme and host in requets
+//	req := c.Request
+//	proxy, err := url.Parse(getLoadBalanceAddr())
+//	if err != nil {
+//		log.Printf("error in parse addr: %v", err)
+//		c.String(500, "error")
+//		return
+//	}
+//	req.URL.Scheme = proxy.Scheme
+//	req.URL.Host = proxy.Host
+//
+//	// step 2: use http.Transport to do request to real server.
+//	transport := http.DefaultTransport
+//	resp, err := transport.RoundTrip(req)
+//	if err != nil {
+//		log.Printf("error in roundtrip: %v", err)
+//		c.String(500, "error")
+//		return
+//	}
+//
+//	// step 3: return real server response to upstream.
+//	for k, vv := range resp.Header {
+//		for _, v := range vv {
+//			c.Header(k, v)
+//		}
+//	}
+//	defer resp.Body.Close()
+//	bufio.NewReader(resp.Body).WriteTo(c.Writer)
+//	return
+//}
