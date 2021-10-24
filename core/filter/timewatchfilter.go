@@ -9,7 +9,7 @@ import (
 )
 
 type TimeWatchFilter struct {
-	nextFilter Filter
+	nextFilter FilterChan
 }
 
 func (tw *TimeWatchFilter) Ordered() int {
@@ -23,7 +23,7 @@ func (tw *TimeWatchFilter) Apply(context *gin.Context) *http.Response {
 	log.Println("start filte , start time is ", start.Format("2006-01-02 15:04:05"))
 	filter := tw.nextFilter
 	if nil != filter {
-		response := filter.Filter(context)
+		response := filter.Apply(context)
 		if response.Status == "200" {
 			log.Println("apply done")
 		}
@@ -33,6 +33,6 @@ func (tw *TimeWatchFilter) Apply(context *gin.Context) *http.Response {
 	return nil
 }
 
-func (tw *TimeWatchFilter) NextFilter() Filter {
+func (tw *TimeWatchFilter) NextFilter() FilterChan {
 	return tw.nextFilter
 }
