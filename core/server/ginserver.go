@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bufio"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/ratelimit"
 	"log"
@@ -25,6 +26,8 @@ func InitGinServer() *http.Server {
 			Addr:    "localhost:" + serverConf.ServerPort,
 			Handler: router,
 		}
+		router.GET("/:path", handlerRequest)
+		router.POST("/:path", handlerRequest)
 		if serverConf.GraceShutDown {
 			quit := make(chan os.Signal)
 			signal.Notify(quit, os.Interrupt)
@@ -58,8 +61,20 @@ func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
 func handlerRequest(context *gin.Context) {
 	req := context.Request
 	path := req.URL.Path
-	filterChan := filter.GetFilterChan(path)
-	filterChan.Apply(context)
+	deltegate := filter.GetDelegate(path)
+	response := deltegate.Fc.Apply(context)
+	writeResponse(context, response)
+	return
+}
+
+func writeResponse(context *gin.Context, response *http.Response) {
+	for k, vv := range response.Header {
+		for _, v := range vv {
+			context.Header(k, v)
+		}
+	}
+	defer response.Body.Close()
+	bufio.NewReader(response.Body).WriteTo(context.Writer)
 }
 
 //func(c *gin.Context) handler(){
