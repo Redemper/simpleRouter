@@ -50,6 +50,6 @@ func getDelegate(uri string) *Delegate {
 
 func findFiltersByUri(uri string) FilterChan {
 	//result := make([]FilterChan,10)
-	//result = append(result, new(TimeWatchFilter))
-	return new(TimeWatchFilter)
+	//result = append(result, new(timeWatchFilter))
+	return new(timeWatchFilter)
 }
