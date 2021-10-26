@@ -41,6 +41,12 @@ func (rf *routerFilter) Apply(context *gin.Context) {
 	bufio.NewReader(resp.Body).WriteTo(context.Writer)
 }
 
+func initRouterFilter(r *config.Router) *routerFilter {
+	rf := new(routerFilter)
+	rf.r = r
+	return rf
+}
+
 //func (rf *routerFilter) Apply(context gin.Context) *http.Response{
 //    	req := c.Request
 //    	proxy, err := url.Parse(getLoadBalanceAddr())
