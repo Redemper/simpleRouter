@@ -53,6 +53,7 @@ func findFiltersByUri(uri string) FilterChan {
 	//result := make([]FilterChan,10)
 	//result = append(result, new(timeWatchFilter))
 	//return new(timeWatchFilter)
+
 	r := new(config.Router)
 	r.Name = "test"
 	r.TargetUri = "http://localhost:2258"

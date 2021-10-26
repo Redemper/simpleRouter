@@ -1,5 +1,6 @@
 router:
   - name: router1
     origin-uri: baidu.com
+    target-uri: bilibili.com
     order: 1
     enabled: true

@@ -7,6 +7,7 @@ import (
 	"log"
 	"path/filepath"
 	"simpleRouter/core/conf"
+	"simpleRouter/core/route"
 )
 
 func InitRouterFromYaml() {
@@ -22,7 +23,7 @@ func InitRouterFromYaml() {
 	} else {
 		routers := yr.Routers
 		for _, r := range routers {
-			AddRouter(r)
+			route.AddRouter(r)
 		}
 	}
 }

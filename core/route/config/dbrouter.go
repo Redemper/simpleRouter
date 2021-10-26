@@ -6,6 +6,7 @@ package config
 import (
 	"gorm.io/gorm"
 	"simpleRouter/core/conf"
+	"simpleRouter/core/route"
 )
 
 var iDB gorm.DB
@@ -23,8 +24,7 @@ func InitRouterFromDB() {
 	var routes []*Router
 	db.Where(" enabled = 1 ").Find(&routes)
 	for _, r := range routes {
-	   // init route
-	   AddRouter(r)
+		// init route
+		route.AddRouter(r)
 	}
 }
-
