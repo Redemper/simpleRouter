@@ -14,17 +14,18 @@ var RouterMap sync.Map
 func init() {
 	flag.Parse()
 	log.Println("routeLoadType is ", routeLoadType)
+	var routers []*config.Router
 	switch *routeLoadType {
 	case "yaml":
-		config.InitRouterFromYaml()
+		routers = config.InitRouterFromYaml()
 	case "db":
 		fallthrough
 	default:
-		config.InitRouterFromDB()
+		routers = config.InitRouterFromDB()
 	}
 	log.Println("routeLoad finished,routes :")
-	for _, r := range GetAllRouter() {
-		log.Println(*r)
+	for _, r := range routers {
+		AddRouter(r)
 	}
 }
 
