@@ -27,6 +27,9 @@ func FilterRequest(context *gin.Context, uri string) {
 
 var delegateMap sync.Map
 
+var FcMap sync.Map
+var InitOnce sync.Once
+
 type FilterChan interface {
 	Apply(context *gin.Context)
 	NextFilter() FilterChan
@@ -58,4 +61,8 @@ func findFiltersByUri(uri string) FilterChan {
 	r.Name = "test"
 	r.TargetUri = "http://localhost:2258"
 	return initRouterFilter(r)
+}
+
+func init() {
+
 }
