@@ -8,25 +8,28 @@ import (
 )
 
 type timeWatchFilter struct {
-	nextFilter FilterChan
+}
+
+func (tw *timeWatchFilter) Name() string {
+	return "timeWatch"
 }
 
 func (tw *timeWatchFilter) Ordered() int {
 	return math.MaxInt8
 }
 
-var _ FilterChan = (*timeWatchFilter)(nil)
+var _ Filter = (*timeWatchFilter)(nil)
 
 func (tw *timeWatchFilter) Apply(context *gin.Context) {
 	start := time.Now()
 	log.Println("start filte , start time is ", start.Format("2006-01-02 15:04:05"))
-	filter := tw.nextFilter
-	if nil != filter {
-		filter.Apply(context)
-		log.Println("time used. ", time.Now().Sub(start))
-	}
+	log.Println("time used. ", time.Now().Sub(start))
+	//filter := tw.Nf
+	//if nil != filter {
+	//	filter.Apply(context)
+	//}
 }
 
-func (tw *timeWatchFilter) NextFilter() FilterChan {
-	return tw.nextFilter
-}
+//func (tw *timeWatchFilter) nextFilter() Filter {
+//	return tw.Nf
+//}

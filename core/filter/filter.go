@@ -1,15 +1,13 @@
 package filter
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
+	"reflect"
 	"simpleRouter/core/route/config"
 	"sync"
 )
 
-//type Filter interface {
-//	Filter(context *gin.Context) *http.Response
-//}
-//
 type Ordered interface {
 	GetOrder() int
 }
@@ -19,28 +17,31 @@ func FilterRequest(context *gin.Context, uri string) {
 	delegate.fc.Apply(context)
 }
 
-//
-//type OrderedFilter interface {
-//    Filter
-//    Ordered
-//}
-
 var delegateMap sync.Map
 
-var FcMap sync.Map
-var InitOnce sync.Once
+var fcMap sync.Map
 
-type FilterChan interface {
+var WrongTypeErr = errors.New("this is not Filter.please check")
+var NotNameErr = errors.New("this filter has't name")
+var DuplicateNameErr = errors.New("already has filter with this name")
+
+type Filter interface {
 	Apply(context *gin.Context)
-	NextFilter() FilterChan
+	Name() string
+}
+
+type OrderFilter interface {
+	Ordered
+	Filter
 }
 
 type Delegate struct {
-	fc  FilterChan
+	fc  Filter
 	uri string
 }
 
 func getDelegate(uri string) *Delegate {
+	reflect.TypeOf("")
 	delegate, ok := delegateMap.Load(uri)
 	if ok {
 		return delegate.(*Delegate)
@@ -52,8 +53,8 @@ func getDelegate(uri string) *Delegate {
 	return d
 }
 
-func findFiltersByUri(uri string) FilterChan {
-	//result := make([]FilterChan,10)
+func findFiltersByUri(uri string) Filter {
+	//result := make([]Filter,10)
 	//result = append(result, new(timeWatchFilter))
 	//return new(timeWatchFilter)
 
@@ -63,6 +64,21 @@ func findFiltersByUri(uri string) FilterChan {
 	return initRouterFilter(r)
 }
 
-func init() {
-
+// add filter to filter map
+func AddFilter(i interface{}) error {
+	filter, ok := i.(Filter)
+	if !ok {
+		return WrongTypeErr
+	}
+	name := filter.Name()
+	if len(name) == 0 {
+		return NotNameErr
+	}
+	_, loaded := fcMap.Load(name)
+	if loaded {
+		// alread exist
+		return DuplicateNameErr
+	}
+	fcMap.Store(filter.Name(), filter)
+	return nil
 }
