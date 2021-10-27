@@ -12,7 +12,7 @@ import (
 )
 
 var clientConfig = *constant.NewClientConfig(
-	constant.WithNamespaceId("e525eafa-f7d7-4029-83d9-008937f9d468"), //当namespace是public时，此处填空字符串。
+	constant.WithNamespaceId("501689b2-129f-450c-8735-b04a5978b016"), //当namespace是public时，此处填空字符串。
 	constant.WithTimeoutMs(5000),
 	constant.WithNotLoadCacheAtStart(true),
 	constant.WithLogDir("/tmp/nacos/log"),
@@ -20,10 +20,12 @@ var clientConfig = *constant.NewClientConfig(
 	constant.WithRotateTime("1h"),
 	constant.WithMaxAge(3),
 	constant.WithLogLevel("debug"),
+	constant.WithUsername("nacos"),
+	constant.WithPassword("nacos"),
 )
 var serverConfigs = []constant.ServerConfig{
 	{
-		IpAddr:      "localhost",
+		IpAddr:      "nacos-nsg.cfpamf.com",
 		ContextPath: "/nacos",
 		Port:        8848,
 		Scheme:      "http",
@@ -61,7 +63,7 @@ func TestRegister(t *testing.T) {
 		fmt.Println(err)
 	}
 	success, err := namingClient.RegisterInstance(vo.RegisterInstanceParam{
-		Ip:          "127.0.0.1",
+		Ip:          "172.16.6.149",
 		Port:        6654,
 		ServiceName: "demo.go",
 		Weight:      10,
@@ -69,8 +71,8 @@ func TestRegister(t *testing.T) {
 		Healthy:     true,
 		Ephemeral:   true,
 		Metadata:    map[string]string{"idc": "shanghai"},
-		ClusterName: "cluster-a", // 默认值DEFAULT
-		GroupName:   "group-a",   // 默认值DEFAULT_GROUP
+		ClusterName: "DEFAULT",       // 默认值DEFAULT
+		GroupName:   "DEFAULT_GROUP", // 默认值DEFAULT_GROUP
 	})
 	if err != nil {
 		fmt.Println("register error == ", err)
