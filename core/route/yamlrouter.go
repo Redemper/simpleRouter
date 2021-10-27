@@ -1,7 +1,7 @@
 /**
   load router config from yaml
 */
-package config
+package route
 
 import (
 	"log"
@@ -22,9 +22,6 @@ func InitRouterFromYaml() []*Router {
 	} else {
 		routers := yr.Routers
 		return routers
-		//for _, r := range routers {
-		//	route.AddRouter(r)
-		//}
 	}
 	return nil
 }

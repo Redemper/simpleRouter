@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"simpleRouter/core/conf"
-	"simpleRouter/core/filter"
 	"time"
 )
 
@@ -25,8 +24,8 @@ func InitGinServer() *http.Server {
 			Addr:    "localhost:" + serverConf.ServerPort,
 			Handler: router,
 		}
-		router.GET("/:path", handlerRequest)
-		router.POST("/:path", handlerRequest)
+		router.Any("/:path", handlerRequest)
+		//router.POST("/:path", handlerRequest)
 		if serverConf.GraceShutDown {
 			quit := make(chan os.Signal)
 			signal.Notify(quit, os.Interrupt)
@@ -58,9 +57,9 @@ func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
 }
 
 func handlerRequest(context *gin.Context) {
-	req := context.Request
-	path := req.URL.Path
-	filter.FilterRequest(context, path)
+	//req := context.Request
+	//path := req.URL.Path
+	//filter.FilterRequest(context, path)
 	//writeResponse(context, response)
 	return
 }

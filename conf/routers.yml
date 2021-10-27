@@ -4,4 +4,4 @@ router:
     target-uri: bilibili.com
     order: 1
     enabled: true
-    filters:
+    filters: timeWatch,trip-router

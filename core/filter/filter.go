@@ -3,82 +3,34 @@ package filter
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"reflect"
-	"simpleRouter/core/route/config"
 	"sync"
 )
 
-type Ordered interface {
-	GetOrder() int
-}
-
-func FilterRequest(context *gin.Context, uri string) {
-	delegate := getDelegate(uri)
-	delegate.fc.Apply(context)
-}
-
+// delegatemap.store and load delegate.
 var delegateMap sync.Map
 
-var fcMap sync.Map
-
-var WrongTypeErr = errors.New("this is not Filter.please check")
-var NotNameErr = errors.New("this filter has't name")
+// errors
 var DuplicateNameErr = errors.New("already has filter with this name")
 
-type Filter interface {
-	Apply(context *gin.Context)
-	Name() string
-}
-
-type OrderFilter interface {
-	Ordered
-	Filter
-}
-
 type Delegate struct {
-	fc  Filter
-	uri string
+	Fn   func(context *gin.Context)
+	Name string
 }
 
-func getDelegate(uri string) *Delegate {
-	reflect.TypeOf("")
-	delegate, ok := delegateMap.Load(uri)
+func GetDelegateByName(name string) *Delegate {
+	d, ok := delegateMap.Load(name)
 	if ok {
-		return delegate.(*Delegate)
+		delegate := d.(*Delegate)
+		return delegate
 	}
-	d := new(Delegate)
-	d.fc = findFiltersByUri(uri)
-	d.uri = uri
-	delegateMap.Store(uri, d)
-	return d
+	return nil
 }
 
-func findFiltersByUri(uri string) Filter {
-	//result := make([]Filter,10)
-	//result = append(result, new(timeWatchFilter))
-	//return new(timeWatchFilter)
-
-	r := new(config.Router)
-	r.Name = "test"
-	r.TargetUri = "http://localhost:2258"
-	return initRouterFilter(r)
-}
-
-// add filter to filter map
-func AddFilter(i interface{}) error {
-	filter, ok := i.(Filter)
-	if !ok {
-		return WrongTypeErr
-	}
-	name := filter.Name()
-	if len(name) == 0 {
-		return NotNameErr
-	}
-	_, loaded := fcMap.Load(name)
-	if loaded {
-		// alread exist
+func PutDelegate(d *Delegate) error {
+	_, ok := delegateMap.Load(d.Name)
+	if ok {
 		return DuplicateNameErr
 	}
-	fcMap.Store(filter.Name(), filter)
+	delegateMap.Store(d.Name, d)
 	return nil
 }
