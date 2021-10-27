@@ -9,4 +9,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
+	github.com/nacos-group/nacos-sdk-go v1.0.9
 )
