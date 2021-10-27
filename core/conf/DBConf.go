@@ -24,6 +24,7 @@ type DBConf struct {
 	Schema    string `yaml:"schema"`
 }
 
+// generate gorm db link.
 func (conf *DBConf) GenerateDBString() string {
 	//var conStr = "cd_mall:Cd_Mall1@tcp(rm-2zek85dzv7g624hbz.mysql.rds.aliyuncs.com:3306)/mall_shop?charset=utf8mb4&parseTime=True&loc=Local"
 	var result strings.Builder
@@ -40,6 +41,9 @@ func (conf *DBConf) GenerateDBString() string {
 	return result.String()
 }
 
+/**
+get db config from yaml
+*/
 func GetDBFromYaml() (*gorm.DB, error) {
 	// read conf
 	conf := new(DBConf)

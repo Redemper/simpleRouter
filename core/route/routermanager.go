@@ -27,6 +27,7 @@ func AddRouter(r *Router) {
 		delegate := filter.GetDelegateByName(s)
 		ds = append(ds, delegate)
 	}
+	// add router trip to filter tail.
 	trip := r.RTrip()
 	d := new(filter.Delegate)
 	d.Fn = trip
@@ -35,6 +36,12 @@ func AddRouter(r *Router) {
 	delegateCache.Store(r.Name, ds)
 }
 
+/**
+core func.start filter request.
+step 1: get router by uri
+step 2: get filter by router
+step 3: fire all filters.
+*/
 func FilterRequest(context *gin.Context, uri string) error {
 	load, ok := uriRouterMap.Load(uri)
 	if !ok {

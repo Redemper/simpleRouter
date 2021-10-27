@@ -12,6 +12,7 @@ var delegateMap sync.Map
 // errors
 var DuplicateNameErr = errors.New("already has filter with this name")
 
+// filter delegate.
 type Delegate struct {
 	Fn   func(context *gin.Context)
 	Name string
