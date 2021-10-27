@@ -13,6 +13,10 @@ jwt - 解析token
 
 mysql - 存储
 
+ratelimit - 限流
+
+nacos - 注册中心及配置中心
+
 
 
 #### TODO
