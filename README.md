@@ -19,9 +19,9 @@ mysql - 存储
 
 - [x] db路由配置
 - [x] yaml路由配置
-- [ ] router匹配
-- [ ] Filter初始化
-- [ ] 转发
+- [x] router匹配 - 根据uri
+- [x] Filter初始化
+- [x] 转发
 - [ ] jwt
 - [ ] 鉴权
 - [ ] 黑白名单统计
