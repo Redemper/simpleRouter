@@ -25,7 +25,7 @@ var clientConfig = *constant.NewClientConfig(
 )
 var serverConfigs = []constant.ServerConfig{
 	{
-		IpAddr:      "nacos-nsg.cfpamf.com",
+		IpAddr:      "127.0.0.1",
 		ContextPath: "/nacos",
 		Port:        8848,
 		Scheme:      "http",
@@ -46,6 +46,16 @@ func TestNacos(t *testing.T) {
 		PageNo:   1,
 		PageSize: 20,
 	})
+	doms := info.Doms
+	for _, d := range doms {
+		service, err := namingClient.GetService(vo.GetServiceParam{
+			ServiceName: d,
+		})
+		if err != nil {
+			fmt.Println("getservice error", err)
+		}
+		fmt.Println(service)
+	}
 	if err != nil {
 		fmt.Println(err)
 	}
