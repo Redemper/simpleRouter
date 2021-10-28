@@ -1,5 +1,9 @@
 package conf
 
+import (
+	"path/filepath"
+)
+
 type ClientConfig struct {
 	NameSpaceId          string `yaml:"namespace"`
 	TimeoutMs            uint64 `yaml:"timeout-ms"`
@@ -13,6 +17,8 @@ type ClientConfig struct {
 	RotateTime           string `yaml:"rotate-time"`
 	MaxAge               uint64 `yaml:"max-age"`
 	LogLevel             string `yaml:"log-level"`
+	UserName             string `yaml:"username"`
+	Password             string `yaml:"password"`
 }
 
 type ServerConfig struct {
@@ -25,4 +31,18 @@ type ServerConfig struct {
 type NacosConf struct {
 	Cc ClientConfig   `yaml:"client-conf"`
 	Sc []ServerConfig `yaml:"server-conf"`
+}
+
+func ReadNacosConfFromYaml() (*NacosConf, error) {
+	// read conf
+	conf := new(NacosConf)
+	path, errp := filepath.Abs("../../conf")
+	if errp != nil {
+		return nil, errp
+	}
+	err := ReadYaml(path+"/nacos.yml", conf)
+	if err != nil {
+		panic(err)
+	}
+	return conf, err
 }
