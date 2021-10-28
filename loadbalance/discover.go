@@ -28,8 +28,27 @@ type Service struct {
 type Instance struct {
 	InstanceID string
 	IP         string
-	Port       int
-	Weight     int
+	Port       uint64
+	Weight     float64
 	Status     InstanceStatus
 	locker     sync.RWMutex
+}
+
+func NewService(name string, instances []*Instance) *Service {
+	return &Service{
+		Name:      name,
+		instances: instances,
+		locker:    sync.RWMutex{},
+	}
+}
+
+func NewInstance(instanceID string, ip string, port uint64, weight float64, status InstanceStatus) *Instance {
+	return &Instance{
+		InstanceID: instanceID,
+		IP:         ip,
+		Port:       port,
+		Weight:     weight,
+		Status:     status,
+		locker:     sync.RWMutex{},
+	}
 }

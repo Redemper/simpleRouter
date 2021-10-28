@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/model"
 	"github.com/nacos-group/nacos-sdk-go/vo"
 	"log"
 	"simpleRouter/loadbalance"
@@ -55,40 +56,34 @@ func (c *Client) GetServers() ([]*loadbalance.Service, error) {
 			log.Println("getservice error", err)
 		}
 		log.Println(service)
+		s := transferService(service)
+
 	}
 	if err != nil {
 		log.Println(err)
 	}
 	log.Println(info)
-
-	//ns := mp["namespace"].(string)
-	//group := mp["group"].(string)
-	//servicesInfo, err := c.NamingClient.GetAllServicesInfo(vo.GetAllServiceInfoParam{
-	//    PageNo:    1,
-	//    PageSize:  20,
-	//    NameSpace: ns,
-	//    GroupName: group,
-	//})
-	//if err != nil {
-	//    return nil, err
-	//}
 	return nil, nil
-	//
-	//instances, err := c.NamingClient.SelectInstances(vo.SelectInstancesParam{
-	//    ServiceName: "demo.go",
-	//    GroupName:   "group-a",             // 默认值DEFAULT_GROUP
-	//    Clusters:    []string{"cluster-a"}, // 默认值DEFAULT
-	//})
-	//if err != nil {
-	//    return nil, err
-	//}
-	//for ins := range instances {
-	//
-	//}
 }
 func (c *Client) Close() error {
 	return nil
 }
 func (c *Client) Open() error {
 	return nil
+}
+
+func transferService(s model.Service) *loadbalance.Service {
+	hosts := s.Hosts
+	ins := make([]*loadbalance.Instance, len(hosts))
+	for _, h := range hosts {
+		var is loadbalance.InstanceStatus
+		if h.Healthy {
+			is = loadbalance.InstanceRun
+		} else {
+			is = loadbalance.InstanceDown
+		}
+		instance := loadbalance.NewInstance(h.InstanceId, h.Ip, h.Port, h.Weight, is)
+		ins = append(ins, instance)
+	}
+	return loadbalance.NewService(s.Name, ins)
 }
