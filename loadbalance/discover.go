@@ -14,7 +14,7 @@ type Discovery interface {
 	SetConfig(config string) error
 	Driver() string
 	SetCallback(callback func(services []*Service))
-	GetServers(mp map[string]interface{}) ([]*Service, error)
+	GetServers() ([]*Service, error)
 	Close() error
 	Open() error
 }
