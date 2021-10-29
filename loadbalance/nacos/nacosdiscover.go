@@ -13,6 +13,7 @@ import (
 const DriverName = "nacos"
 
 type Client struct {
+	Services []*loadbalance.Service
 	constant.ClientConfig
 	ServerConfigs []constant.ServerConfig
 	NamingClient  naming_client.INamingClient
@@ -55,15 +56,10 @@ func (c *Client) GetServers() ([]*loadbalance.Service, error) {
 		if err != nil {
 			log.Println("getservice error", err)
 		}
-		log.Println(service)
 		s := transferService(service)
-
+		c.Services = append(c.Services, s)
 	}
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(info)
-	return nil, nil
+	return c.Services, nil
 }
 func (c *Client) Close() error {
 	return nil
