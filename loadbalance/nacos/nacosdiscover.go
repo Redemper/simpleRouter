@@ -32,12 +32,6 @@ func (c *Client) SetCallback(callback func(services []*loadbalance.Service)) {
 }
 
 func (c *Client) GetServers() ([]*loadbalance.Service, error) {
-	//nacosConf, err := conf.ReadNacosConfFromYaml()
-	//if err != nil {
-	//	log.Fatal("cant load nacos conf ,err == ",err)
-	//}
-	//cc := nacosConf.Cc
-	//sc := nacosConf.Sc
 	if nil == c.NamingClient {
 		return nil, errors.New("nacos client is not ready")
 	}
