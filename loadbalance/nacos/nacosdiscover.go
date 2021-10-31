@@ -62,6 +62,7 @@ func (c *Client) Open() error {
 	return nil
 }
 
+// 转换nacos的service到自定义service
 func transferService(s model.Service) *loadbalance.Service {
 	hosts := s.Hosts
 	ins := make([]*loadbalance.Instance, len(hosts))
