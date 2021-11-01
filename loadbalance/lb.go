@@ -13,6 +13,13 @@ type RobinLb struct {
 	d         Discovery
 }
 
+func NewRobinLb(dis Discovery) *RobinLb {
+	return &RobinLb{
+		d:         dis,
+		instances: make(map[string]*list.List),
+	}
+}
+
 func (r *RobinLb) Description() string {
 	return "roubin load balance"
 }
@@ -24,7 +31,7 @@ func (r *RobinLb) GetServers() ([]*Service, error) {
 func (r *RobinLb) GetInstance(serviceName string) *Instance {
 	insList := r.instances[serviceName]
 	if insList != nil {
-		return r.GetInstance(serviceName)
+		return r.getInstance(serviceName)
 	}
 	servers, err := r.GetServers()
 	if err != nil {
@@ -44,7 +51,7 @@ func (r *RobinLb) GetInstance(serviceName string) *Instance {
 		}
 		r.instances[serviceName] = l
 	}
-	return nil
+	return r.getInstance(serviceName)
 }
 
 func (r *RobinLb) getInstance(serviceName string) *Instance {
