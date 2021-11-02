@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"simpleRouter/core/conf"
+	"simpleRouter/core/route"
 	"time"
 )
 
@@ -57,9 +58,10 @@ func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
 }
 
 func handlerRequest(context *gin.Context) {
-	//req := context.Request
-	//path := req.URL.Path
+	req := context.Request
+	path := req.URL.Path
 	//filter.FilterRequest(context, path)
 	//writeResponse(context, response)
+	route.FilterRequest(context, path)
 	return
 }

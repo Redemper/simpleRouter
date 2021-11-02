@@ -1,6 +1,9 @@
 package loadbalance
 
-import "sync"
+import (
+	"flag"
+	"sync"
+)
 
 type InstanceStatus int
 
@@ -51,4 +54,24 @@ func NewInstance(instanceID string, ip string, port uint64, weight float64, stat
 		Status:     status,
 		locker:     sync.RWMutex{},
 	}
+}
+
+func GetTagetUriByOriginUri(uri string) string {
+	return uri
+}
+
+var registerType = flag.String("register-type", "nacos", "please choose register type")
+
+func InitDiscovery() {
+	flag.Parse()
+	switch *registerType {
+	case "nacos":
+
+	default:
+
+	}
+}
+
+func init() {
+
 }
