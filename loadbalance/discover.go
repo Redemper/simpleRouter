@@ -1,7 +1,6 @@
 package loadbalance
 
 import (
-	"flag"
 	"sync"
 )
 
@@ -60,18 +59,11 @@ func GetTagetUriByOriginUri(uri string) string {
 	return uri
 }
 
-var registerType = flag.String("register-type", "nacos", "please choose register type")
+var once sync.Once
+var lb Lb
 
-func InitDiscovery() {
-	flag.Parse()
-	switch *registerType {
-	case "nacos":
-
-	default:
-
-	}
-}
-
-func init() {
-
+func InitDiscovery(d Discovery) {
+	once.Do(func() {
+		lb = NewRobinLb(d)
+	})
 }

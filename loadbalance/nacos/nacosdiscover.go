@@ -116,21 +116,6 @@ func init() {
 	c := &Client{
 		NamingClient: namingClient,
 	}
-	servers, err := c.GetServers()
-	if err == nil {
-		fmt.Println("nacos start end .... ")
-		for _, s := range servers {
-			fmt.Println(*s)
-		}
-	}
-	lb := loadbalance.NewRobinLb(c)
-	fmt.Println(lb.Description())
-	getServers, err := lb.GetServers()
-	if err == nil {
-		for _, server := range getServers {
-			fmt.Println(*server)
-		}
-		instance := lb.GetInstance("demo.go")
-		fmt.Println(instance)
-	}
+	loadbalance.InitDiscovery(c)
+
 }

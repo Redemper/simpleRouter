@@ -24,8 +24,12 @@ func (r *RobinLb) Description() string {
 	return "roubin load balance"
 }
 
-func (r *RobinLb) GetServers() ([]*Service, error) {
-	return r.d.GetServers()
+func (r *RobinLb) GetServers() []*Service {
+	servers, err := r.d.GetServers()
+	if err != nil {
+		return nil
+	}
+	return servers
 }
 
 func (r *RobinLb) GetInstance(serviceName string) *Instance {
@@ -33,8 +37,8 @@ func (r *RobinLb) GetInstance(serviceName string) *Instance {
 	if insList != nil {
 		return r.getInstance(serviceName)
 	}
-	servers, err := r.GetServers()
-	if err != nil {
+	servers := r.GetServers()
+	if servers == nil {
 		return nil
 	}
 	var ins []*Instance
