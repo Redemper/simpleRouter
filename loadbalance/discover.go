@@ -1,6 +1,8 @@
 package loadbalance
 
 import (
+	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -56,7 +58,7 @@ func NewInstance(instanceID string, ip string, port uint64, weight float64, stat
 }
 
 func GetTagetUriByOriginUri(uri string) string {
-	return uri
+	return getTargetUri(uri)
 }
 
 var once sync.Once
@@ -66,4 +68,19 @@ func InitDiscovery(d Discovery) {
 	once.Do(func() {
 		lb = NewRobinLb(d)
 	})
+}
+
+func getTargetUri(uri string) string {
+	uri = strings.Replace(uri, "http", "", 1)
+	split := strings.Split(uri, "/")
+	serviceName := split[0]
+	instance := lb.GetInstance(serviceName)
+	if nil != instance {
+		var sb strings.Builder
+		sb.WriteString(instance.IP)
+		sb.WriteString(":")
+		sb.WriteString(strconv.Itoa(int(instance.Port)))
+		return sb.String()
+	}
+	return ""
 }
