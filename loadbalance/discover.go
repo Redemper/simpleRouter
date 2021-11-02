@@ -58,7 +58,14 @@ func NewInstance(instanceID string, ip string, port uint64, weight float64, stat
 }
 
 func GetTagetUriByOriginUri(uri string) string {
-	return getTargetUri(uri)
+	uri2 := strings.Replace(uri, "http", "", 1)
+	split := strings.Split(uri2, "/")
+	serviceName := split[0]
+	targetUri := getTargetUri(serviceName)
+	if len(targetUri) < 1 {
+		targetUri = uri
+	}
+	return targetUri
 }
 
 var once sync.Once
@@ -70,10 +77,7 @@ func InitDiscovery(d Discovery) {
 	})
 }
 
-func getTargetUri(uri string) string {
-	uri = strings.Replace(uri, "http", "", 1)
-	split := strings.Split(uri, "/")
-	serviceName := split[0]
+func getTargetUri(serviceName string) string {
 	instance := lb.GetInstance(serviceName)
 	if nil != instance {
 		var sb strings.Builder
