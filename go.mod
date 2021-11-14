@@ -10,4 +10,5 @@ require (
 	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
 	github.com/nacos-group/nacos-sdk-go v1.0.9
+	github.com/go-redis/redis/v8 v8.11.4 // indirect
 )
