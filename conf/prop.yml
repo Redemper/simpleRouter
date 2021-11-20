@@ -1,0 +1,36 @@
+db:
+  dialector: mysql
+  url: rm-2zea4h41ew1cd3njd.mysql.rds.aliyuncs.com
+  port: 3306
+  user: finapp
+  password: FinApp
+  schema: mall_router
+
+nacos:
+  client-conf:
+    namespace: 501689b2-129f-450c-8735-b04a5978b016
+    timeout-ms: 5000
+    beat-interval: 5000
+    open-kms: false
+    cache-dir: /tmp/nacos/cache
+    update-thread-num: 25
+    not-load-cache-start: false
+    update-cache-when-empty: true
+    log-dir: /tmp/nacos/log
+    rotate-time: 1h
+    max-age: 3
+    log-level: debug
+    username: nacos
+    password: nacos
+  server-conf:
+    - scheme: http
+      context-path: /nacos
+      ip-addr: 127.0.0.1
+      port: 8848
+
+server:
+  grace-shutdown: true
+  server-port: 6789
+  rateLimit:
+    enable: true
+    rps: 50

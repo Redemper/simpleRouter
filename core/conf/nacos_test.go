@@ -6,9 +6,6 @@ import (
 )
 
 func TestReadNacosConfFromYaml(t *testing.T) {
-	yaml, err := ReadNacosConfFromYaml()
-	if err != nil {
-		fmt.Println(err)
-	}
+	yaml := ReadNacosConfFromYaml()
 	fmt.Println(yaml)
 }

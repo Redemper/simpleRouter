@@ -3,7 +3,6 @@ package conf
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"path/filepath"
 	"strings"
 )
 
@@ -46,15 +45,7 @@ get db config from yaml
 */
 func GetDBFromYaml() (*gorm.DB, error) {
 	// read conf
-	conf := new(DBConf)
-	path, errp := filepath.Abs("../../conf")
-	if errp != nil {
-		return nil, errp
-	}
-	err := ReadYaml(path+"/gorm.yml", conf)
-	if err != nil {
-		panic(err)
-	}
+	conf := GetDbConf()
 	dbString := conf.GenerateDBString()
 	db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
 

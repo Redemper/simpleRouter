@@ -13,8 +13,8 @@ import (
 )
 
 func InitGinServer() *http.Server {
-	serverConf, err := conf.InitServerConf()
-	if err == nil && serverConf != nil {
+	serverConf := conf.InitServerConf()
+	if serverConf != nil {
 		router := gin.Default()
 		//router.GET("/", func(c *gin.Context) {
 		//    time.Sleep(5 * time.Second)

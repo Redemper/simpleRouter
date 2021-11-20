@@ -6,10 +6,7 @@ import (
 )
 
 func TestInitServerConf(t *testing.T) {
-	conf, err := InitServerConf()
-	if err != nil {
-		fmt.Println("errors ,", err)
-	} else {
-		fmt.Println(conf)
-	}
+	conf := InitServerConf()
+	fmt.Println(conf)
+
 }

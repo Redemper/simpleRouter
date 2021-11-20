@@ -1,18 +1,8 @@
 package conf
 
-import "path/filepath"
-
-func InitServerConf() (*ServerConf, error) {
-	sc := new(ServerConf)
-	path, errp := filepath.Abs("../../conf")
-	if errp != nil {
-		return nil, errp
-	}
-	err := ReadYaml(path+"/server.yml", sc)
-	if err != nil {
-		return nil, err
-	}
-	return sc, nil
+func InitServerConf() *ServerConf {
+	sc := GetServerConf()
+	return sc
 }
 
 type ServerConf struct {
