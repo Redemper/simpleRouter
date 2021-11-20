@@ -29,7 +29,8 @@ type YamlConf struct {
 	*NacosConf   `yaml:"nacos"`
 	*ServerConf  `yaml:"server"`
 	*YamlRouters `yaml:"yaml_router"`
-	CacheType    string `yaml:"cacheType"`
+	CacheType    string `yaml:"cache_type"`
+	*LbConf      `yaml:"lb"`
 }
 
 func initYaml() {
@@ -57,4 +58,8 @@ func GetServerConf() *ServerConf {
 
 func GetYamlRouters() *YamlRouters {
 	return Yc.YamlRouters
+}
+
+func GetLbConf() *LbConf {
+	return Yc.LbConf
 }

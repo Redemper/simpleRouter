@@ -73,6 +73,7 @@ var lb Lb
 
 func InitDiscovery(d Discovery) {
 	once.Do(func() {
+		// TODO 根据配置决定使用哪一种类型的负载均衡
 		lb = NewRobinLb(d)
 	})
 }
