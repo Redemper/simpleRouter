@@ -9,14 +9,14 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/model"
 	"github.com/nacos-group/nacos-sdk-go/vo"
 	"log"
-	"simpleRouter/loadbalance"
+	"simpleRouter/discover"
 	"sync"
 )
 
 const DriverName = "nacos"
 
 type Client struct {
-	Services     []*loadbalance.Service
+	Services     []*discover.Service
 	NamingClient naming_client.INamingClient
 	once         sync.Once
 }
@@ -29,11 +29,11 @@ func (c *Client) Driver() string {
 	return DriverName
 }
 
-func (c *Client) SetCallback(callback func(services []*loadbalance.Service)) {
+func (c *Client) SetCallback(callback func(services []*discover.Service)) {
 	return
 }
 
-func (c *Client) GetServers() ([]*loadbalance.Service, error) {
+func (c *Client) GetServers() ([]*discover.Service, error) {
 	if nil == c.NamingClient {
 		return nil, errors.New("nacos client is not ready")
 	}
@@ -67,20 +67,20 @@ func (c *Client) Open() error {
 }
 
 // 转换nacos的service到自定义service
-func transferService(dom string, s model.Service) *loadbalance.Service {
+func transferService(dom string, s model.Service) *discover.Service {
 	hosts := s.Hosts
-	ins := make([]*loadbalance.Instance, len(hosts))
+	ins := make([]*discover.Instance, len(hosts))
 	for i, h := range hosts {
-		var is loadbalance.InstanceStatus
+		var is discover.InstanceStatus
 		if h.Healthy {
-			is = loadbalance.InstanceRun
+			is = discover.InstanceRun
 		} else {
-			is = loadbalance.InstanceDown
+			is = discover.InstanceDown
 		}
-		instance := loadbalance.NewInstance(h.InstanceId, h.Ip, h.Port, h.Weight, is)
+		instance := discover.NewInstance(h.InstanceId, h.Ip, h.Port, h.Weight, is)
 		ins[i] = instance
 	}
-	return loadbalance.NewService(dom, ins)
+	return discover.NewService(dom, ins)
 }
 
 func init() {
@@ -116,6 +116,6 @@ func init() {
 	c := &Client{
 		NamingClient: namingClient,
 	}
-	loadbalance.InitDiscovery(c)
+	discover.InitDiscovery(c)
 
 }

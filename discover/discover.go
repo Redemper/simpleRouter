@@ -1,4 +1,4 @@
-package loadbalance
+package discover
 
 import (
 	"strconv"

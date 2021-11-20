@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"simpleRouter/loadbalance"
+	"simpleRouter/discover"
 )
 
 type Router struct {
@@ -23,7 +23,7 @@ type Router struct {
 func (r *Router) RTrip() func(context *gin.Context) {
 	return func(context *gin.Context) {
 		uri := r.TargetUri
-		uri = loadbalance.GetTagetUriByOriginUri(uri)
+		uri = discover.GetTagetUriByOriginUri(uri)
 		req := context.Request
 		proxy, err := url.Parse(uri)
 		if err != nil {
