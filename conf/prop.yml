@@ -34,3 +34,5 @@ server:
   rateLimit:
     enable: true
     rps: 50
+
+cacheType: memory

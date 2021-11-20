@@ -22,12 +22,13 @@ func ReadYaml(path string, out interface{}) error {
 	return nil
 }
 
-var Yc *YamlConf = new(YamlConf)
+var Yc = new(YamlConf)
 
 type YamlConf struct {
 	*DBConf     `yaml:"db"`
 	*NacosConf  `yaml:"nacos"`
 	*ServerConf `yaml:"server"`
+	CacheType   string `yaml:"cacheType"`
 }
 
 func init() {
