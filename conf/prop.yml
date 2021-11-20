@@ -36,3 +36,11 @@ server:
     rps: 50
 
 cacheType: memory
+
+router:
+  - name: router1
+    origin-uri: baidu.com
+    target-uri: bilibili.com
+    order: 1
+    enabled: true
+    filters: timeWatch

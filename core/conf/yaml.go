@@ -25,13 +25,14 @@ func ReadYaml(path string, out interface{}) error {
 var Yc = new(YamlConf)
 
 type YamlConf struct {
-	*DBConf     `yaml:"db"`
-	*NacosConf  `yaml:"nacos"`
-	*ServerConf `yaml:"server"`
-	CacheType   string `yaml:"cacheType"`
+	*DBConf      `yaml:"db"`
+	*NacosConf   `yaml:"nacos"`
+	*ServerConf  `yaml:"server"`
+	*YamlRouters `yaml:"yaml_router"`
+	CacheType    string `yaml:"cacheType"`
 }
 
-func init() {
+func initYaml() {
 	path, pathErr := filepath.Abs("../../conf")
 	if pathErr != nil {
 		return
@@ -52,4 +53,8 @@ func GetNacosConf() *NacosConf {
 
 func GetServerConf() *ServerConf {
 	return Yc.ServerConf
+}
+
+func GetYamlRouters() *YamlRouters {
+	return Yc.YamlRouters
 }

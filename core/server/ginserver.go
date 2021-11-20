@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"simpleRouter/core/conf"
-	"simpleRouter/core/route"
 	"time"
 )
 
@@ -62,6 +61,6 @@ func handlerRequest(context *gin.Context) {
 	path := req.URL.Path
 	//filter.FilterRequest(context, path)
 	//writeResponse(context, response)
-	route.FilterRequest(context, path)
+	conf.FilterRequest(context, path)
 	return
 }

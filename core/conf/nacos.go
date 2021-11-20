@@ -29,7 +29,7 @@ type NacosConf struct {
 	Sc []NacosServer `yaml:"server-conf"`
 }
 
-func ReadNacosConfFromYaml() *NacosConf {
+func readNacosConfFromYaml() *NacosConf {
 	// read conf
 	nacosConf := GetNacosConf()
 	return nacosConf

@@ -1,10 +1,11 @@
-package route
+package conf
 
 import (
 	"errors"
 	"flag"
 	"github.com/gin-gonic/gin"
 	"log"
+	"simpleRouter/core/component"
 	"simpleRouter/core/filter"
 	"strings"
 	"sync"
@@ -17,7 +18,7 @@ var nameRouterMap sync.Map
 
 var delegateCache sync.Map
 
-func AddRouter(r *Router) {
+func AddRouter(r *component.Router) {
 	uriRouterMap.Store(r.OriginUri, r)
 	nameRouterMap.Store(r.Name, r)
 	filters := r.Filters
@@ -47,7 +48,7 @@ func FilterRequest(context *gin.Context, uri string) error {
 	if !ok {
 		return errors.New("cant find router by uri")
 	}
-	router := load.(*Router)
+	router := load.(*component.Router)
 	delegates, ok := delegateCache.Load(router.Name)
 	if !ok {
 		return errors.New("cant find filter by uri")
@@ -59,17 +60,17 @@ func FilterRequest(context *gin.Context, uri string) error {
 	return nil
 }
 
-func init() {
+func initRouter() {
 	flag.Parse()
 	log.Println("routeLoadType is ", routeLoadType)
-	var routers []*Router
+	var routers []*component.Router
 	switch *routeLoadType {
 	case "yaml":
-		routers = InitRouterFromYaml()
+		routers = initRouterFromYaml()
 	case "db":
 		fallthrough
 	default:
-		routers = InitRouterFromDB()
+		routers = initRouterFromDB()
 	}
 	log.Println("routeLoad finished,routes :")
 	for _, r := range routers {
@@ -77,14 +78,37 @@ func init() {
 	}
 }
 
-func GetAllRouter() []*Router {
-	var routes []*Router
+func GetAllRouter() []*component.Router {
+	var routes []*component.Router
 	uriRouterMap.Range(func(key, value interface{}) bool {
-		router, ok := value.(*Router)
+		router, ok := value.(*component.Router)
 		if ok {
 			routes = append(routes, router)
 		}
 		return true
 	})
+	return routes
+}
+
+func initRouterFromYaml() []*component.Router {
+	routers := GetYamlRouters()
+	if nil == routers {
+		return nil
+	}
+	return routers.Routers
+}
+
+type YamlRouters struct {
+	Routers []*component.Router `yaml:"router"`
+}
+
+func initRouterFromDB() []*component.Router {
+	db, err := GetDB()
+	if err != nil {
+		panic(err)
+	}
+	db.AutoMigrate(&component.Router{})
+	var routes []*component.Router
+	db.Where(" enabled = 1 ").Find(&routes)
 	return routes
 }

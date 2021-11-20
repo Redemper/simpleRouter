@@ -5,11 +5,11 @@ import (
 	"testing"
 )
 
-func TestReadYaml(t *testing.T) {
-	_, err := GetDBFromYaml()
+func TestGetDB(t *testing.T) {
+	_, err := GetDB()
 	if err != nil {
 		log.Fatal("error occur", err)
 	} else {
-		log.Println("Test ReadYaml success")
+		log.Println("Test GetDB success")
 	}
 }

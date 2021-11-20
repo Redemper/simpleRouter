@@ -1,4 +1,4 @@
-package route
+package conf
 
 import (
 	"encoding/json"
@@ -16,4 +16,9 @@ func TestGetAllRouter(t *testing.T) {
 			fmt.Println("sry json fail")
 		}
 	}
+}
+
+func TestInitRouterFromYaml(t *testing.T) {
+	routers := GetYamlRouters()
+	fmt.Println(routers)
 }

@@ -43,7 +43,7 @@ func (conf *DBConf) GenerateDBString() string {
 /**
 get db config from yaml
 */
-func GetDBFromYaml() (*gorm.DB, error) {
+func GetDB() (*gorm.DB, error) {
 	// read conf
 	conf := GetDbConf()
 	dbString := conf.GenerateDBString()
