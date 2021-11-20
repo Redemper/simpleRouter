@@ -48,6 +48,5 @@ func GetDBFromYaml() (*gorm.DB, error) {
 	conf := GetDbConf()
 	dbString := conf.GenerateDBString()
 	db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
-
 	return db, err
 }
