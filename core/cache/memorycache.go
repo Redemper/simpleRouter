@@ -40,7 +40,6 @@ func (mc *MemoryCache) Load(ctx context.Context, key string) (interface{}, error
 	case <-ctx.Done():
 		return nil, CtxDone
 	default:
-
 	}
 	switch mc.c.(type) {
 	case sync.Map:
@@ -57,7 +56,6 @@ func (mc *MemoryCache) Store(ctx context.Context, key string, value interface{})
 	case <-ctx.Done():
 		return CtxDone
 	default:
-
 	}
 	switch mc.c.(type) {
 	case sync.Map:
@@ -74,7 +72,6 @@ func (mc *MemoryCache) Delete(ctx context.Context, key string) error {
 	case <-ctx.Done():
 		return CtxDone
 	default:
-
 	}
 	switch mc.c.(type) {
 	case sync.Map:

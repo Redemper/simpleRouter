@@ -5,22 +5,25 @@ import (
 	"flag"
 	"github.com/gin-gonic/gin"
 	"log"
+	"simpleRouter/core/cache"
 	"simpleRouter/core/component"
 	"simpleRouter/core/filter"
 	"strings"
-	"sync"
 )
 
 var routeLoadType = flag.String("route-load-type", "db", "the way to load routers,Optional value:db,yaml")
 
-var uriRouterMap sync.Map
-var nameRouterMap sync.Map
+const (
+	RouterPrefix     = "routersCache_"
+	NameRouterPrefix = "nameRoutersCache_"
+	DelegatePrefix   = "delegateCache_"
+)
 
-var delegateCache sync.Map
+//var delegateCache sync.Map
 
 func AddRouter(r *component.Router) {
-	uriRouterMap.Store(r.OriginUri, r)
-	nameRouterMap.Store(r.Name, r)
+	_ = cache.StoreWithoutContext(RouterPrefix+r.OriginUri, r)
+	_ = cache.StoreWithoutContext(NameRouterPrefix+r.Name, r)
 	filters := r.Filters
 	split := strings.Split(filters, ",")
 	var ds []*filter.Delegate
@@ -34,7 +37,7 @@ func AddRouter(r *component.Router) {
 	d.Fn = trip
 	d.Name = r.Name + "trip"
 	ds = append(ds, d)
-	delegateCache.Store(r.Name, ds)
+	_ = cache.StoreWithoutContext(DelegatePrefix+r.Name, ds)
 }
 
 /**
@@ -44,13 +47,13 @@ step 2: get filter by router
 step 3: fire all filters.
 */
 func FilterRequest(context *gin.Context, uri string) error {
-	load, ok := uriRouterMap.Load(uri)
-	if !ok {
+	load, err := cache.LoadWithoutContext(uri)
+	if err != nil {
 		return errors.New("cant find router by uri")
 	}
 	router := load.(*component.Router)
-	delegates, ok := delegateCache.Load(router.Name)
-	if !ok {
+	delegates, err := cache.LoadWithoutContext(DelegatePrefix + router.Name)
+	if err != nil {
 		return errors.New("cant find filter by uri")
 	}
 	ds := delegates.([]*filter.Delegate)
@@ -78,17 +81,18 @@ func initRouter() {
 	}
 }
 
-func GetAllRouter() []*component.Router {
-	var routes []*component.Router
-	uriRouterMap.Range(func(key, value interface{}) bool {
-		router, ok := value.(*component.Router)
-		if ok {
-			routes = append(routes, router)
-		}
-		return true
-	})
-	return routes
-}
+//func GetAllRouter() []*component.Router {
+//    var routes []*component.Router
+//    cache.LoadWithoutContext("")
+//    uriRouterMap.Range(func(key, value interface{}) bool {
+//        router, ok := value.(*component.Router)
+//        if ok {
+//            routes = append(routes, router)
+//        }
+//        return true
+//    })
+//    return routes
+//}
 
 func initRouterFromYaml() []*component.Router {
 	routers := GetYamlRouters()
