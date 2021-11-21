@@ -19,8 +19,6 @@ const (
 	DelegatePrefix   = "delegateCache_"
 )
 
-//var delegateCache sync.Map
-
 func AddRouter(r *component.Router) {
 	_ = cache.StoreWithoutContext(RouterPrefix+r.OriginUri, r)
 	_ = cache.StoreWithoutContext(NameRouterPrefix+r.Name, r)

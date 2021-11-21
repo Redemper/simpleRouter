@@ -3,11 +3,12 @@ package filter
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"sync"
+	"simpleRouter/core/cache"
 )
 
-// delegatemap.store and load delegate.
-var delegateMap sync.Map
+const (
+	DelegateMapPrefix = "delegateMapPrefix_"
+)
 
 // errors
 var DuplicateNameErr = errors.New("already has filter with this name")
@@ -19,8 +20,8 @@ type Delegate struct {
 }
 
 func GetDelegateByName(name string) *Delegate {
-	d, ok := delegateMap.Load(name)
-	if ok {
+	d, err := cache.LoadWithoutContext(DelegateMapPrefix + name)
+	if err == nil {
 		delegate := d.(*Delegate)
 		return delegate
 	}
@@ -28,10 +29,13 @@ func GetDelegateByName(name string) *Delegate {
 }
 
 func PutDelegate(d *Delegate) error {
-	_, ok := delegateMap.Load(d.Name)
-	if ok {
+	v, err := cache.LoadWithoutContext(d.Name)
+	//_, ok := delegateMap.Load(d.Name)
+	if err != nil {
+		return err
+	} else if v != nil {
 		return DuplicateNameErr
 	}
-	delegateMap.Store(d.Name, d)
+	cache.StoreWithoutContext(d.Name, d)
 	return nil
 }
