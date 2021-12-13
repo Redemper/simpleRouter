@@ -2,7 +2,6 @@ package cache
 
 import (
 	"context"
-	"flag"
 )
 
 type ICache interface {
@@ -11,18 +10,22 @@ type ICache interface {
 	Delete(ctx context.Context, key string) error
 }
 
-var CacheType = flag.String("choose your caceh type", "memory", "")
-
 var c ICache
 
-func init() {
-	flag.Parse()
-	switch *CacheType {
+func InitCacheByCacheType(cacheType string, m map[string]interface{}) error {
+	switch cacheType {
 	case "redis":
-	case "memory":
+		addr := m["Addr"].(string)
+		password := m["Password"].(string)
+		Db := m["Db"].(int)
+		Prefix := m["prefix"].(string)
+		enable := m["EnableKeyPrefix"].(bool)
+		c = NewRedisCache(addr, password, Prefix, Db, enable)
 	default:
 		c = NewMemoryCache(SYCNMAP)
 	}
+	//TODO 添加一些错误
+	return nil
 }
 
 func Load(ctx context.Context, key string) (interface{}, error) {

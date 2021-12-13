@@ -31,6 +31,7 @@ type YamlConf struct {
 	*YamlRouters `yaml:"yaml_router"`
 	CacheType    string `yaml:"cache_type"`
 	*LbConf      `yaml:"lb"`
+	*RedisConf   `yaml:"redis"`
 }
 
 func initYaml() {
@@ -62,4 +63,8 @@ func GetYamlRouters() *YamlRouters {
 
 func GetLbConf() *LbConf {
 	return Yc.LbConf
+}
+
+func GetRedisConf() *RedisConf {
+	return Yc.RedisConf
 }

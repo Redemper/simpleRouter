@@ -11,3 +11,7 @@ func init() {
 	fmt.Println(lbConf)
 	initNacos()
 }
+
+func initCache() {
+
+}

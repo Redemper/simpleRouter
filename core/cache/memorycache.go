@@ -44,7 +44,8 @@ func (mc *MemoryCache) Load(ctx context.Context, key string) (interface{}, error
 	switch mc.c.(type) {
 	case sync.Map:
 		m := mc.c.(sync.Map)
-		return m.Load(key), nil
+		load, _ := m.Load(key)
+		return load, nil
 	case map[string]interface{}:
 		m := mc.c.(map[string]interface{})
 		return m[key], nil
