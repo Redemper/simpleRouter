@@ -14,7 +14,7 @@ func init() {
 func initCache() {
 	// 读取yaml配置到对应的实体中
 	redisConf := new(pojo.RedisConf)
-	err := conf.ReadYamlFromDefaultPath(redisConf)
+	err := conf.YamlConf.RedisConf
 	if err != nil {
 		log.Fatal("can load redis conf from yaml")
 		InitCacheByCacheType("map", nil)

@@ -9,7 +9,7 @@ import (
 
 func init() {
 	lbConf := pojo.LbConf{}
-	err := conf.ReadYamlFromDefaultPath(lbConf)
+	err := conf.YamlConf.LbConf
 	if err != nil {
 		log.Fatal("can load discover from yaml")
 	}

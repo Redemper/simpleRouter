@@ -6,9 +6,12 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"simpleRouter/core/pojo"
 )
 
-const DEFAULT_YAML_PATH = "../../conf"
+const DEFAULT_YAML_PATH = "../../conf/prop.yml"
+
+var YamlConf *pojo.YamlConf
 
 func ReadYaml(path string, out interface{}) error {
 	log.Printf("start read yaml,path == %v", path)

@@ -22,12 +22,9 @@ func initRouterFromYaml() []*pojo.Router {
 }
 
 func GetYamlRouters() []*pojo.Router {
-	var routers YamlRouters
-	err := conf.ReadYamlFromDefaultPath(routers)
-	if err != nil {
-		return nil
-	}
-	return routers.Routers
+	//var routers YamlRouters
+	routers := conf.YamlConf.Routers
+	return routers
 }
 
 type YamlRouters struct {
@@ -46,8 +43,7 @@ func initRouterFromDB() []*pojo.Router {
 }
 
 func getDb() (*gorm.DB, error) {
-	dbConf := new(pojo.DBConf)
-	conf.ReadYamlFromDefaultPath(dbConf)
+	dbConf := conf.YamlConf.DBConf
 	dbString := dbConf.GenerateDBString()
 	return gorm.Open(mysql.Open(dbString), &gorm.Config{})
 }

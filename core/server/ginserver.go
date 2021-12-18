@@ -8,13 +8,12 @@ import (
 	"os"
 	"os/signal"
 	"simpleRouter/core/conf"
-	"simpleRouter/core/pojo"
 	"simpleRouter/core/router"
 	"time"
 )
 
 func InitGinServer() *http.Server {
-	serverConf := initServerConf()
+	serverConf := conf.YamlConf.ServerConf
 	if serverConf != nil {
 		router := gin.Default()
 		//router.GET("/", func(c *gin.Context) {
@@ -47,12 +46,6 @@ func InitGinServer() *http.Server {
 		return server
 	}
 	return nil
-}
-
-func initServerConf() *pojo.ServerConf {
-	sc := new(pojo.ServerConf)
-	conf.ReadYamlFromDefaultPath(sc)
-	return sc
 }
 
 func leakBucket(limit ratelimit.Limiter) gin.HandlerFunc {
