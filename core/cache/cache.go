@@ -21,8 +21,12 @@ func InitCacheByCacheType(cacheType string, m map[string]interface{}) error {
 		Prefix := m["prefix"].(string)
 		enable := m["EnableKeyPrefix"].(bool)
 		c = NewRedisCache(addr, password, Prefix, Db, enable)
+	case "map":
+		c = NewMemoryCache(MAP)
+	case "syncMap":
+		fallthrough
 	default:
-		c = NewMemoryCache(SYCNMAP)
+		c = NewMemoryCache(SYNCMAP)
 	}
 	//TODO 添加一些错误
 	return nil

@@ -14,17 +14,17 @@ type MemoryCache struct {
 var CtxDone = errors.New("context is done")
 var NoneCache = errors.New("no cache type")
 
-type McType int
+type McType string
 
 const (
-	SYCNMAP McType = iota
-	MAP
+	SYNCMAP McType = "syncMap"
+	MAP     McType = "map"
 )
 
 func NewMemoryCache(mt McType) *MemoryCache {
 	m := new(MemoryCache)
 	switch mt {
-	case SYCNMAP:
+	case SYNCMAP:
 		m.c = &sync.Map{}
 	case MAP:
 		m.c = make(map[string]interface{})
