@@ -1,11 +1,14 @@
 package conf
 
 import (
+	"errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"path/filepath"
 )
+
+const DEFAULT_YAML_PATH = "../../conf"
 
 func ReadYaml(path string, out interface{}) error {
 	log.Printf("start read yaml,path == %v", path)
@@ -22,49 +25,10 @@ func ReadYaml(path string, out interface{}) error {
 	return nil
 }
 
-var Yc = new(YamlConf)
-
-type YamlConf struct {
-	*DBConf      `yaml:"db"`
-	*NacosConf   `yaml:"nacos"`
-	*ServerConf  `yaml:"server"`
-	*YamlRouters `yaml:"yaml_router"`
-	CacheType    string `yaml:"cache_type"`
-	*LbConf      `yaml:"lb"`
-	*RedisConf   `yaml:"redis"`
-}
-
-func initYaml() {
-	path, pathErr := filepath.Abs("../../conf")
+func ReadYamlFromDefaultPath(out interface{}) error {
+	path, pathErr := filepath.Abs(DEFAULT_YAML_PATH)
 	if pathErr != nil {
-		return
+		return errors.New("can find path")
 	}
-	err := ReadYaml(path+"/prop.yml", Yc)
-	if err != nil {
-		return
-	}
-}
-
-func GetDbConf() *DBConf {
-	return Yc.DBConf
-}
-
-func GetNacosConf() *NacosConf {
-	return Yc.NacosConf
-}
-
-func GetServerConf() *ServerConf {
-	return Yc.ServerConf
-}
-
-func GetYamlRouters() *YamlRouters {
-	return Yc.YamlRouters
-}
-
-func GetLbConf() *LbConf {
-	return Yc.LbConf
-}
-
-func GetRedisConf() *RedisConf {
-	return Yc.RedisConf
+	return ReadYaml(path, out)
 }

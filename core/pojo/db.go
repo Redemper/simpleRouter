@@ -1,8 +1,6 @@
-package conf
+package pojo
 
 import (
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"strings"
 )
 
@@ -14,6 +12,7 @@ import (
   Password : 密码
   Schema : 数据库schema
 */
+
 type DBConf struct {
 	Dialector string `yaml:"dialector"`
 	Url       string `yaml:"url"`
@@ -40,13 +39,13 @@ func (conf *DBConf) GenerateDBString() string {
 	return result.String()
 }
 
-/**
-get db config from yaml
-*/
-func GetDB() (*gorm.DB, error) {
-	// read conf
-	conf := GetDbConf()
-	dbString := conf.GenerateDBString()
-	db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
-	return db, err
-}
+///**
+//get db config from yaml
+//*/
+//func GetDB() (*gorm.DB, error) {
+//    // read conf
+//    conf := GetDbConf()
+//    dbString := conf.GenerateDBString()
+//    db, err := gorm.Open(mysql.Open(dbString), &gorm.Config{})
+//    return db, err
+//}

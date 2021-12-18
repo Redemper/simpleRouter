@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"github.com/go-redis/redis/v8"
+	"simpleRouter/core/pojo"
 	"time"
 )
 
@@ -16,17 +17,20 @@ type RedisCache struct {
 	Prefix                string
 }
 
-func NewRedisCache(Addr, Password, Prefix string, Db int, EnableKeyPrefix bool) *RedisCache {
+func newRedisCache(conf *pojo.RedisConf) *RedisCache {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     Addr,
-		Password: Password,
-		DB:       Db,
+		Addr:     conf.Addr,
+		Password: conf.Password,
+		DB:       conf.Db,
 	})
-	if !EnableKeyPrefix {
-		Prefix = ""
-	}
 	return &RedisCache{
-		client: rdb,
+		client:                rdb,
+		Addr:                  conf.Addr,
+		Password:              conf.Password,
+		Db:                    conf.Db,
+		DefaultExpireDuration: conf.DefaultExpireDuration,
+		EnableKeyPrefix:       conf.EnableKeyPrefix,
+		Prefix:                conf.Prefix,
 	}
 }
 

@@ -1,4 +1,4 @@
-package conf
+package pojo
 
 type NacosClient struct {
 	NameSpaceId          string `yaml:"namespace"`
@@ -27,10 +27,4 @@ type NacosServer struct {
 type NacosConf struct {
 	Cc NacosClient   `yaml:"client-conf"`
 	Sc []NacosServer `yaml:"server-conf"`
-}
-
-func readNacosConfFromYaml() *NacosConf {
-	// read conf
-	nacosConf := GetNacosConf()
-	return nacosConf
 }

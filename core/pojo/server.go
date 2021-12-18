@@ -1,9 +1,4 @@
-package conf
-
-func InitServerConf() *ServerConf {
-	sc := GetServerConf()
-	return sc
-}
+package pojo
 
 type ServerConf struct {
 	GraceShutDown bool      `yaml:"grace-shutdown"`

@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"simpleRouter/core/pojo"
 )
 
 type ICache interface {
@@ -12,21 +13,16 @@ type ICache interface {
 
 var c ICache
 
-func InitCacheByCacheType(cacheType string, m map[string]interface{}) error {
+func InitCacheByCacheType(cacheType string, conf *pojo.RedisConf) error {
 	switch cacheType {
 	case "redis":
-		addr := m["Addr"].(string)
-		password := m["Password"].(string)
-		Db := m["Db"].(int)
-		Prefix := m["prefix"].(string)
-		enable := m["EnableKeyPrefix"].(bool)
-		c = NewRedisCache(addr, password, Prefix, Db, enable)
+		c = newRedisCache(conf)
 	case "map":
-		c = NewMemoryCache(MAP)
+		c = newMemoryCache(MAP)
 	case "syncMap":
 		fallthrough
 	default:
-		c = NewMemoryCache(SYNCMAP)
+		c = newMemoryCache(SYNCMAP)
 	}
 	//TODO 添加一些错误
 	return nil

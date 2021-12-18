@@ -1,17 +1,24 @@
 package cache
 
-import "simpleRouter/core/conf"
+import (
+	"log"
+	"simpleRouter/core/conf"
+	"simpleRouter/core/pojo"
+)
 
+// 初始化缓存
 func init() {
-	redisConf := conf.GetRedisConf()
-	if nil == redisConf {
-		return
+	initCache()
+}
+
+func initCache() {
+	// 读取yaml配置到对应的实体中
+	redisConf := new(pojo.RedisConf)
+	err := conf.ReadYamlFromDefaultPath(redisConf)
+	if err != nil {
+		log.Fatal("can load redis conf from yaml")
+		InitCacheByCacheType("map", nil)
+	} else {
+		InitCacheByCacheType("redis", redisConf)
 	}
-	m := make(map[string]interface{})
-	m["Addr"] = redisConf.Addr
-	m["Password"] = redisConf.Password
-	m["Db"] = redisConf.Db
-	m["prefix"] = redisConf.Prefix
-	m["EnableKeyPrefix"] = redisConf.EnableKeyPrefix
-	InitCacheByCacheType("redis", m)
 }

@@ -1,13 +1,17 @@
-package conf
+package router
 
 import (
+	"bufio"
 	"errors"
 	"flag"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
+	"net/url"
 	"simpleRouter/core/cache"
-	"simpleRouter/core/component"
+	"simpleRouter/core/discover"
 	"simpleRouter/core/filter"
+	"simpleRouter/core/pojo"
 	"strings"
 )
 
@@ -19,7 +23,7 @@ const (
 	DelegatePrefix   = "delegateCache_"
 )
 
-func AddRouter(r *component.Router) {
+func AddRouter(r *pojo.Router) {
 	_ = cache.StoreWithoutContext(RouterPrefix+r.OriginUri, r)
 	_ = cache.StoreWithoutContext(NameRouterPrefix+r.Name, r)
 	filters := r.Filters
@@ -30,7 +34,7 @@ func AddRouter(r *component.Router) {
 		ds = append(ds, delegate)
 	}
 	// add router trip to filter tail.
-	trip := r.RTrip()
+	trip := trip(r)
 	d := new(filter.Delegate)
 	d.Fn = trip
 	d.Name = r.Name + "trip"
@@ -49,7 +53,7 @@ func FilterRequest(context *gin.Context, uri string) error {
 	if err != nil {
 		return errors.New("cant find router by uri")
 	}
-	router := load.(*component.Router)
+	router := load.(*pojo.Router)
 	delegates, err := cache.LoadWithoutContext(DelegatePrefix + router.Name)
 	if err != nil {
 		return errors.New("cant find filter by uri")
@@ -64,7 +68,7 @@ func FilterRequest(context *gin.Context, uri string) error {
 func initRouter() {
 	flag.Parse()
 	log.Println("routeLoadType is ", routeLoadType)
-	var routers []*component.Router
+	var routers []*pojo.Router
 	switch *routeLoadType {
 	case "yaml":
 		routers = initRouterFromYaml()
@@ -79,38 +83,44 @@ func initRouter() {
 	}
 }
 
-//func GetAllRouter() []*component.Router {
-//    var routes []*component.Router
-//    cache.LoadWithoutContext("")
-//    uriRouterMap.Range(func(key, value interface{}) bool {
-//        router, ok := value.(*component.Router)
-//        if ok {
-//            routes = append(routes, router)
-//        }
-//        return true
-//    })
-//    return routes
+//func GetAllRouter() []*pojo.Router {
+//   var routes []*pojo.Router
+//   cache.LoadWithoutContext("")
+//   uriRouterMap.Range(func(key, value interface{}) bool {
+//       router, ok := value.(*pojo.Router)
+//       if ok {
+//           routes = append(routes, router)
+//       }
+//       return true
+//   })
+//   return routes
 //}
 
-func initRouterFromYaml() []*component.Router {
-	routers := GetYamlRouters()
-	if nil == routers {
-		return nil
+func trip(r *pojo.Router) func(context *gin.Context) {
+	return func(context *gin.Context) {
+		uri := discover.GetTagetUriByOriginUri(r.OriginUri)
+		req := context.Request
+		proxy, err := url.Parse(uri)
+		if err != nil {
+			log.Printf("error in parse addr: %v", err)
+			context.String(500, "error")
+			return
+		}
+		req.URL.Scheme = proxy.Scheme
+		req.URL.Host = proxy.Host
+		transport := http.DefaultTransport
+		resp, err := transport.RoundTrip(req)
+		if err != nil {
+			log.Printf("error in roundtrip: %v", err)
+			context.String(500, "error")
+			return
+		}
+		for k, vv := range resp.Header {
+			for _, v := range vv {
+				context.Header(k, v)
+			}
+		}
+		defer resp.Body.Close()
+		bufio.NewReader(resp.Body).WriteTo(context.Writer)
 	}
-	return routers.Routers
-}
-
-type YamlRouters struct {
-	Routers []*component.Router `yaml:"router"`
-}
-
-func initRouterFromDB() []*component.Router {
-	db, err := GetDB()
-	if err != nil {
-		panic(err)
-	}
-	db.AutoMigrate(&component.Router{})
-	var routes []*component.Router
-	db.Where(" enabled = 1 ").Find(&routes)
-	return routes
 }

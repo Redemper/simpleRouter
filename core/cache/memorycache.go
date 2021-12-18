@@ -21,7 +21,7 @@ const (
 	MAP     McType = "map"
 )
 
-func NewMemoryCache(mt McType) *MemoryCache {
+func newMemoryCache(mt McType) *MemoryCache {
 	m := new(MemoryCache)
 	switch mt {
 	case SYNCMAP:
