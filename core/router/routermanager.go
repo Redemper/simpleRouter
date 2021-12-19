@@ -3,7 +3,6 @@ package router
 import (
 	"bufio"
 	"errors"
-	"flag"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -15,7 +14,7 @@ import (
 	"strings"
 )
 
-var routeLoadType = flag.String("route-load-type", "db", "the way to load routers,Optional value:db,yaml")
+//var routeLoadType = flag.String("route-load-type", "db", "the way to load routers,Optional value:db,yaml")
 
 const (
 	RouterPrefix     = "routersCache_"
@@ -66,17 +65,11 @@ func FilterRequest(context *gin.Context, uri string) error {
 }
 
 func initRouter() {
-	flag.Parse()
-	log.Println("routeLoadType is ", routeLoadType)
+	//flag.Parse()
+	//log.Println("routeLoadType is ", routeLoadType)
 	var routers []*pojo.Router
-	switch *routeLoadType {
-	case "yaml":
-		routers = initRouterFromYaml()
-	case "db":
-		fallthrough
-	default:
-		routers = initRouterFromDB()
-	}
+	routers = append(routers, initRouterFromYaml()...)
+	routers = append(routers, initRouterFromDB()...)
 	log.Println("routeLoad finished,routes :")
 	for _, r := range routers {
 		AddRouter(r)
